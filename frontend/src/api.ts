@@ -92,7 +92,17 @@ export const api = {
     req<AiParsedTask>("/api/ai/parse-task", { method: "POST", body: JSON.stringify({ text, provider }) }),
   aiPlan: (provider?: AiProvider) =>
     req<AiPlan>("/api/ai/plan", { method: "POST", body: JSON.stringify({ provider }) }),
-
+  aiProductivityInsights: () =>
+  req<{
+    total_tasks: number;
+    completed_tasks: number;
+    pending_tasks: number;
+    in_progress_tasks: number;
+    completion_rate: number;
+    insight: string;
+    suggestions: string[];
+    provider: AiProvider;
+  }>("/api/ai/productivity-insights", { method: "POST" }),
   // Admin-only (backend must return 403 for role=user)
   adminUsers: async (): Promise<AdminUser[]> =>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

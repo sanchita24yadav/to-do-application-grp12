@@ -77,8 +77,12 @@ def _http_post(url: str, headers: dict, body: dict) -> dict:
     """The only place that touches the network (easy to replace in tests)."""
     try:
         r = httpx.post(url, headers=headers, json=body, timeout=TIMEOUT_SECONDS)
-    except httpx.HTTPError:
-        raise HTTPException(status_code=502, detail="The AI service could not be reached.")
+    except httpx.HTTPError as e:
+        print(f"AI request failed: {type(e).__name__}: {e}", flush=True)
+        raise HTTPException(
+            status_code=502,
+            detail="The AI service could not be reached."
+        )
     if r.status_code in (401, 403):
         raise HTTPException(status_code=502, detail="The AI provider rejected the API key.")
     if r.status_code == 429:
